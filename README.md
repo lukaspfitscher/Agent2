@@ -1,7 +1,5 @@
-# Agent2
-A lightweight terminal Agent
-
-
+# <font color="#008080">Agent2</font>
+### <font color="#20B2AA">A lightweight terminal Agent</font>
 
 > [!WARNING]
 > This project description is inconsistent and contains errors; it was released as quickly as possible for conceptual feedback. No code currently exists.

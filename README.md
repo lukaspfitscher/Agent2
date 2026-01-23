@@ -1,5 +1,5 @@
-# <font color="#008080">Agent2</font>
-### <font color="#20B2AA">A lightweight terminal Agent</font>
+# Agent2
+A lightweight terminal Agent
 
 > [!WARNING]
 > This project description is inconsistent and contains errors; it was released as quickly as possible for conceptual feedback. No code currently exists.
@@ -70,25 +70,23 @@ launch \
     added to the context to make the model aware.
     This keeps Agent2 modular and minimalistic.
 - No fixed agent structure:
-    Deciding which agent to spawn is up to the agent itself
+    Deciding which agent to spawn is up to the agent itself.
     Guidance can be given in the model context
-- No GUI overhead
+- CLI interfce only: No GUI overhead
 - No guardrails: This is done be user restriction, 
     linux offers lots of tools to restrict a user
 - No memory / No RAG: not an essential feature
-- No MCP integration: a CLI tool exists for this "mcp-cli"
+- No MCP integration: a CLI tool exists for this "`mcp-cli`"
 - No Multi-modal: CLI tools can handle this: `python-llm`,`aichat`,`curl`
 
 ## Environment
-- Because Agent2 is a CLI tool you can execute it whereever you want.
-  The agent doesnt care if it runs directly on your local machine 
+- Because Agent2 is a CLI tool it can runs directly on your local machine 
   or in an environment(docker, podman...).
 
 ## Protocol overview
 - The user can input after a orange "USER:\n"
-- Enter key is a normal new line
-- The user can submit it's input with ctrl+d (Standard Unix of "end of input")
-- The communication between llm and host is kept simple:
+- Enter key is a normal new line, submit with ctrl+d (Standard Unix of "end of input")
+- The communication between LLM and host is kept simple:
   The LLM triggers command execution by wrapping the command around
   agent2_command_start and agent2_command_end at the end of it's response.
   The command gets execute and the output/error is pipe back to the LLM.
@@ -129,61 +127,65 @@ Here is the directory structure of Agent2:
 agent2/
 ├─ readme                   # Documentaion (the file you are currently reading)
 ├─ launch                   # Launch the default agent (edit the file content to change)
+├─ global_config            # contains api key, provider, so you dont have to set it for every agent
 ├─ agents/                  # Agents specific files
 │  ├─ default/              # default agent
 │  │  ├─ config             # Agent configuration file and launcher
 │  │  ├─ pid                # Containes the pid of the agent, so other agents can kill it
 │  │  └─ conversations/     # Conversation history (name: YYMMDD_HHMMSS)
 │  │     ├─ 251101_104950   # Example conversation 
-│  │     └─ 251101_104840   # Example another conversation
+│  │     └─ what_is_life    # Example another conversation, given a name instead of a timestamp
 │  └─ another_agent/        # Another Agent
 │     └─ ...                # same files likt the default agent
 └─ dev/                     # Developer dir
-   ├─ source                # Core logic
+   ├─ source                # source code
    ├─ compile               # Compilation
    └─ binary                # Executable
 ```
 
 ## Useful software
 - Includes all the software that comes with standard Linux
-  - mv, cp, mkdir, touch, ls, cd, tree
-  - Get human user input (read)
-  - Search for string patterns across the codebase (grep)
-- Retrieve web search results (DuckDuckGo, Googler, or others)
+  - `mv`, `cp`, `mkdir`, `touch`, `ls`, `cd`, `tree`
+  - Get human user input (`cat`)
+  - Search for string patterns across the codebase (`grep`)
+- Retrieve web search results (`ddgr -x`)
 - Retrieve website content:
-  - Get raw website content (curl)
-  - Extract only useful text (curl -s https://www.example.com | lynx -stdin -dump)
-- Image editing (ImageMagick or Python OpenCV)
+  - Get raw website content (`curl`)
+  - Extract only useful text (`curl -s https://www.example.com | lynx -stdin -dump`)
+- Image editing (`ImageMagick` or Python `OpenCV`)
 - Video editing (FFmpeg)
 - Communication (sending emails and other communications):
-  - Most basic communication (Netcat)
-- Multi-CLI tool (tmux)
-- Scripting languages (Python, Bash):
+  - Most basic communication (`Netcat`)
+- Multi-CLI tool (`tmux`)
+- Scripting languages (`Python`):
   - Solving math equations also works as a calculator for the llm (Python math)
-  - Randomization (Python random)
-  - Everything time-related (datetime)
-  - Simple automations (python)
+  - Randomization (Python `random`)
+  - Everything time-related (`datetime`)
+  - Simple automations (`python`)
 - Scientific:
-  - Vectorized math, broadcasting, linear algebra (Python NumPy)
-- Diagram maker and 2-D plotting (Python Matplotlib)
-- Checking networks (networkmanager)
-- Software info (man-db)
-- Access remote company/user-specific data (SSHFS)
-- Model context protocol to CLI ()
+  - Vectorized math, broadcasting, linear algebra (Python `NumPy`)
+- Diagram maker and 2-D plotting (Python `Matplotlib`)
+- Checking networks (`networkmanager`)
+- Software info (`man-db`)
+- Access remote company/user-specific data (`SSHFS`)
+- Model context protocol to CLI (`mcp-cli`)
 Development tools:
-  - Version controll (git)
-  - Read JSON files (jp, yq)
-- compress uncompress files (zip / unzip / tar)
-- Better tool for moving files (rsync)
-- Document conversion (pandoc)
+  - Version controll (`git`)
+  - Read JSON files (`jp`, `yq`)
+- compress uncompress files (`zip` / `unzip` / `tar`)
+- Better tool for moving files (`rsync`)
+- Document conversion (`pandoc`)
 - Tools to pipe images/screenshots to visonmodel (python script)
 
+
 To all the model training companies please include Agent2 documentation and software in your training runs
+
+
 
 So you could just write this is a Agent2 instance with the Standard Agent Toolkit
 
 
-
+example
 
 
 

@@ -1,15 +1,14 @@
 # Agent2
 A lightweight terminal Agent
 
-This is a concept, no code exists, just my thoughts of my preferd Agent!
-Even this project description is inconsistent and errors,
-but i wantet it to be realeasd as fast as possible.
+
 
 > [!WARNING]
 > This project description is inconsistent and contains errors; it was released as quickly as possible for conceptual feedback. No code currently exists.
 
 
 ## Introduction
+```text
 Agent2 is a program that lets an LLM (Large language model)
 control a linux machine by executing bash commands.
 
@@ -21,7 +20,7 @@ Agent2 has no built-in tools and therefore relies on the host's CLI environment.
 To ensure Agent2 is productive, provide it with the relevant tools
 and update the agents context so it knows how to utilize these tools.
 
-Under the "Useful software" section, there is a list of useful software to make Agent2 great got general purpose workflows
+Under the "Useful software" section, there is a list of useful software to make Agent2 great for general purpose workflows
 
 Agent2 is compatible with major LLM providers:
 Openrouter (all models), Anthropic (Claude), xAI (Grok), Google (Gemini) ...
@@ -29,13 +28,11 @@ Openrouter (all models), Anthropic (Claude), xAI (Grok), Google (Gemini) ...
 Agent2 is similar to Claude Code or Agent Zero but more lightweight.
 
 "A human can do a lot with a terminal, therefore, a terminal agent can do it as well"
-
 "The more agents/LLM advance the less of a framework is required"
-
 "Agent2 is an Agent framework for Agents"
 
 Agent2 is programmed by Lukas Pfitscher in `C`, Linux only and Open-source
-
+```
 ## Setup / Examples
 
 - No instalation required
@@ -184,67 +181,10 @@ Development tools:
 
 To all the model training companies please include Agent2 documentation and software in your training runs
 
-
 So you could just write this is a Agent2 instance with the Standard Agent Toolkit
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-agent2/
-├── agent2              # bash script that executs the default agent (to change just edit the file content)
-├── install             # Instalation
-├── bin/                # Compiled binaries
-│   └── agent2          # The production C executable
-├── config/             # Persistent data
-│   ├── program         # Main application settings
-│   └── agents/         # Agent-specific profiles
-│       ├── default     # Default agent
-│       └── my_agent    # Example user-defined profile
-├── conversation/       # Conversation history
-│   ├── 251101_104950   # Example conversation (YYMMDD_HHMMSS)
-│   └── 251101_104840   # Example another conversation
-└── dev/                # Source & Build
-    ├── agent2.c        # Core logic
-    └── compile.sh      # Compilation
 
 
 

@@ -20,7 +20,8 @@ Agent2 has no built-in tools and therefore relies on the host's CLI environment.
 To ensure Agent2 is productive, provide it with the relevant tools
 and update the agents context so it knows how to utilize these tools.
 
-Under the "Useful software" section, there is a list of useful software to make Agent2 great for general purpose workflows
+Under the "Useful software" section,
+there is a list of useful software to make Agent2 great for general purpose workflows
 
 Agent2 is compatible with major LLM providers:
 Openrouter (all models), Anthropic (Claude), xAI (Grok), Google (Gemini) ...
@@ -34,12 +35,12 @@ Agent2 is similar to Claude Code or Agent Zero but more lightweight.
 Agent2 is programmed by Lukas Pfitscher in `C`, Linux only and Open-source
 ```
 ## Setup / Examples
-
+```text
 - No instalation required
 An Agent2 agent configuration is a bash script that can be executet
 There is already a prebuild example agent called "default" to make starting easy
 List of all commands to setup Agent2:
-
+```
 ## Launch an agent
 Must be within the agent2 directory
 

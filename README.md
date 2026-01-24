@@ -3,8 +3,6 @@ A lightweight terminal Agent
 
 > [!WARNING]
 > This project description is inconsistent and contains errors; it was released as quickly as possible for conceptual feedback. No code currently exists.
-
-
 ## Introduction
 ```text
 Agent2 is a program that lets an LLM (Large language model)
@@ -40,10 +38,10 @@ There is already a prebuild example agent called "default" to make starting easy
 List of all commands to setup Agent2:
 ```
 ## Launch an agent
-Must be within the agent2 directory
+Execute the lauch binary inside the agent2 directory
 
 ```bash
-launch \
+./launch
   # Enter a API-key \
   -api_key "sk-or-v1-5f5d03..." \
   # Set a provider
@@ -62,7 +60,6 @@ launch \
   # Predefined a prompt / if not set the user will prompted \
   -prompt "return the sum of 34 + 45"
 ```
-
 ## What Agent2 is not
 - No built-in tools:
     Bash is enough, if a tool is necessary,
@@ -78,11 +75,9 @@ launch \
 - No memory / No RAG: not an essential feature
 - No MCP integration: a CLI tool exists for this "`mcp-cli`"
 - No Multi-modal: CLI tools can handle this: `python-llm`,`aichat`,`curl`
-
 ## Environment
 - Because Agent2 is a CLI tool it can runs directly on your local machine 
   or in an environment(docker, podman...).
-
 ## Protocol overview
 - The user can input after a orange "USER:\n"
 - Enter key is a normal new line, submit with ctrl+d (Standard Unix of "end of input")
@@ -93,16 +88,15 @@ launch \
 - The agent responds with a blue "AGENT:\n"
 - If the model doesnt requests a another command the USER is promped.
 - To interupt/stop the agent press ctrl+c
-
 ## Example conversation
 Here is an example of a minimal USER-AGENT-SYSTEM conversation:
 
-USER:
+`USER:`
 You are Agent2, an Agent that can execute bash commands
 by wrapping them with agent2_command_start and agent2_command_end
-at the end of its responds.
-You can ask for user input with the `cat` bash function.
-Here is a list of useful programs: `ls`, `cd`, `curl`...
+at the end of its responds. 
+
+Here is a list of useful programs: ls, cd, curl...
 list current files!
 
 `AGENT:`
@@ -110,7 +104,7 @@ agent2_command_start
 ls
 agent2_command_end
 
-`SYSTEM:`
+`SYSTEM:`s
 boot etc lib run...
 
 `AGENT:`
@@ -118,32 +112,30 @@ These are the entries in the current directory:
 boot etc lib run...
 
 Conversations are saved as plain text with timestamps as filenames
-and under agent2/agents/you_agent_name/conversation
+under agent2/conversation
 
 ## Project directory structure
 Here is the directory structure of Agent2:
 
-```
+```text
 agent2/
-├─ readme                   # Documentaion (the file you are currently reading)
-├─ launch                   # Launch the default agent (edit the file content to change)
-├─ global_config            # contains api key, provider, so you dont have to set it for every agent
-├─ agents/                  # Agents specific files
-│  ├─ default/              # default agent
-│  │  ├─ config             # Agent configuration file and launcher
-│  │  ├─ pid                # Containes the pid of the agent, so other agents can kill it
-│  │  └─ conversations/     # Conversation history (name: YYMMDD_HHMMSS)
-│  │     ├─ 251101_104950   # Example conversation 
-│  │     └─ what_is_life    # Example another conversation, given a name instead of a timestamp
-│  └─ another_agent/        # Another Agent
-│     └─ ...                # same files likt the default agent
-└─ dev/                     # Developer dir
-   ├─ source                # source code
-   ├─ compile               # Compilation
-   └─ binary                # Executable
+├─ readme             # Documentaion (the file you are currently reading)
+├─ launch             # Launch the agent
+├─ config             # Contains api key, provider
+├─ pid                # Containes the pid of the agent, so other agents can kill it
+├─ conversations/     # Conversation history (default name: YYMMDD_HHMMSS)
+│  ├─ 251101_104950   # Example conversation
+│  └─ what_is_life    # Example another conversation, given a name instead of a timestamp
+└─ dev/               # Developer dir
+   ├─ source          # Source code
+   └─ compile         # Compilation
 ```
 
 ## Useful software
+
+Here is a list of usefull programs of the agent.
+We call this the Standard Agent Toolkit - Short ATK:
+
 - Includes all the software that comes with standard Linux
   - `mv`, `cp`, `mkdir`, `touch`, `ls`, `cd`, `tree`
   - Get human user input (`cat`)
@@ -177,52 +169,47 @@ Development tools:
 - Document conversion (`pandoc`)
 - Tools to pipe images/screenshots to visonmodel (python script)
 
+## program structure
 
-To all the model training companies please include Agent2 documentation and software in your training runs
+```text
+read config settings
+if prompt given jump to "LLM ask"
+infinite loop (break with ctrl+c)
+  go to label no command
+  user input, send with ctrl+d
+  go to label LLM ask
+  LLM ask
+  update conversation
+  extract command
+  if no command go to user input
+  execute command
+  get error/output
+  update conversation
+```
 
+## Multi agent support
+- To spawn new agents make a copy of Agent2
+- We keep this simple: one program, one agent
+- Integrating multiagent directly in the program makes everthing much more complex
 
+### To spawn a new agent:
+```bash
+# Copy current agent
+cp path_agent_dir path_new_agent_dir
 
-So you could just write this is a Agent2 instance with the Standard Agent Toolkit
+# Optionally remove existing conversations
+rm -rf path_new_agent_dir/conversation/*
 
+# Launch an Agent2 with a preprompt:
+cd path_new_agent_dir
+./launch -prompt "You are a subagent, make a cleanup of..."
+```
 
-example
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### Terminate an Agent
+Each agent creates a PID file containing its process ID. To terminate an agent:
+```bash
+kill $(cat path_new_agent_dir/PID)
+```
 
 
 

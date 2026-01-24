@@ -24,7 +24,7 @@ Openrouter (all models), Anthropic (Claude), xAI (Grok), Google (Gemini) ...
 
 Agent2 is similar to Claude Code or Agent Zero but more lightweight.
 ```
-> [!Quote]
+> [!QUOTE]
 > A human can do a lot with a terminal, therefore, a terminal agent can do it as well
 > The more agents/LLM advance the less of a framework is required
 > Agent2 is an Agent framework for Agents
@@ -212,5 +212,31 @@ Each agent creates a PID file containing its process ID. To terminate an agent:
 ```bash
 kill $(cat path_new_agent_dir/PID)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

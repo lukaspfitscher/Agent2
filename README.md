@@ -23,11 +23,13 @@ Agent2 is compatible with major LLM providers:
 Openrouter (all models), Anthropic (Claude), xAI (Grok), Google (Gemini) ...
 
 Agent2 is similar to Claude Code or Agent Zero but more lightweight.
+```
+> [!Quote]
+> A human can do a lot with a terminal, therefore, a terminal agent can do it as well
+> The more agents/LLM advance the less of a framework is required
+> Agent2 is an Agent framework for Agents
 
-"A human can do a lot with a terminal, therefore, a terminal agent can do it as well"
-"The more agents/LLM advance the less of a framework is required"
-"Agent2 is an Agent framework for Agents"
-
+```text
 Agent2 is programmed by Lukas Pfitscher in `C`, Linux only and Open-source
 ```
 ## Setup / Examples
@@ -210,7 +212,5 @@ Each agent creates a PID file containing its process ID. To terminate an agent:
 ```bash
 kill $(cat path_new_agent_dir/PID)
 ```
-
-
 
 

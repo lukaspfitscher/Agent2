@@ -1,0 +1,184 @@
+
+
+SYSTEM:
+
+
+You are Agent2, an Agent that can execute bash scripts
+To execute a script in a seperate shell wrap the script text with
+agent2_script_start+new_line and new_line+agent2_script_end
+at the end of a request.
+
+- Includes all the software that comes with standard Linux
+  - `mv`, `cp`, `mkdir`, `touch`, `ls`, `cd`, `tree`
+  - Get human user input (`cat`)
+  - Search for string patterns across the codebase (`grep`)
+- Retrieve web search results (`ddgr -x`)
+- Retrieve website content:
+  - Get raw website content (`curl`)
+  - Extract only useful text (`curl -s https://www.example.com | lynx -stdin -dump`)
+- Image editing (`ImageMagick` or Python `OpenCV`)
+- Video editing (FFmpeg)
+- Communication (sending emails and other communications):
+  - Most basic communication (`Netcat`)
+- Multi-CLI tool (`tmux`)
+- Scripting languages (`Python`):
+  - Solving math equations also works as a calculator for the llm (Python math)
+  - Randomization (Python `random`)
+  - Everything time-related (`datetime`)
+  - Simple automations (`python`)
+- Scientific:
+  - Vectorized math, broadcasting, linear algebra (Python `NumPy`)
+- Diagram maker and 2-D plotting (Python `Matplotlib`)
+- Checking networks (`networkmanager`)
+- Software info (`man-db`)
+- Access remote company/user-specific data (`SSHFS`)
+- Model context protocol to CLI (`mcp-cli`)
+Development tools:
+  - Version controll (`git`)
+  - Read JSON files (`jp`, `yq`)
+- compress uncompress files (`zip` / `unzip` / `tar`)
+- Better tool for moving files (`rsync`)
+- Document conversion (`pandoc`)
+- Tools to pipe images/screenshots to visonmodel (python script)
+
+USER:
+
+print a random number
+
+LLM:
+
+I'll help you generate a random number using Python's random module. Here's a simple script:
+
+agent2_script_start
+python3 -c "import random; print(random.randint(1, 100))"
+agent2_script_end
+
+This will print a random integer between 1 and 100. Each time you run it, you'll get a different random number.
+
+USER:
+
+nothing can be at the end after agent2_script_end
+
+LLM:
+
+agent2_script_start
+python3 -c "import random; print(random.randint(1, 100))"
+agent2_script_end
+
+SYSTEM:
+
+4
+
+
+LLM:
+
+Here is the output: 4
+
+The random number generated was 4.
+
+USER:
+
+
+
+SYSTEM:
+
+
+You are Agent2, an Agent that can execute bash scripts
+To execute a script in a seperate shell wrap the script text with
+agent2_script_start+new_line and new_line+agent2_script_end
+at total end of a request. No other text after the script.
+
+- Includes all the software that comes with standard Linux
+  - `mv`, `cp`, `mkdir`, `touch`, `ls`, `cd`, `tree`
+  - Get human user input (`cat`)
+  - Search for string patterns across the codebase (`grep`)
+- Retrieve web search results (`ddgr -x`)
+- Retrieve website content:
+  - Get raw website content (`curl`)
+  - Extract only useful text (`curl -s https://www.example.com | lynx -stdin -dump`)
+- Image editing (`ImageMagick` or Python `OpenCV`)
+- Video editing (FFmpeg)
+- Communication (sending emails and other communications):
+  - Most basic communication (`Netcat`)
+- Multi-CLI tool (`tmux`)
+- Scripting languages (`Python`):
+  - Solving math equations also works as a calculator for the llm (Python math)
+  - Randomization (Python `random`)
+  - Everything time-related (`datetime`)
+  - Simple automations (`python`)
+- Scientific:
+  - Vectorized math, broadcasting, linear algebra (Python `NumPy`)
+- Diagram maker and 2-D plotting (Python `Matplotlib`)
+- Checking networks (`networkmanager`)
+- Software info (`man-db`)
+- Access remote company/user-specific data (`SSHFS`)
+- Model context protocol to CLI (`mcp-cli`)
+Development tools:
+  - Version controll (`git`)
+  - Read JSON files (`jp`, `yq`)
+- compress uncompress files (`zip` / `unzip` / `tar`)
+- Better tool for moving files (`rsync`)
+- Document conversion (`pandoc`)
+- Tools to pipe images/screenshots to visonmodel (python script)
+
+USER:
+
+what time is it
+
+LLM:
+
+agent2_script_start
+date +"%T"
+agent2_script_end
+
+SYSTEM:
+
+13:03:12
+
+
+LLM:
+
+The current time is 13:03:12 (1:03:12 PM).
+
+USER:
+
+check all the files you see with ls
+
+LLM:
+
+I'll use ls to list the files in the current directory.
+
+agent2_script_start
+ls
+agent2_script_end
+
+SYSTEM:
+
+config
+context
+conversation
+launch
+main.py
+output
+pid
+readme
+script
+
+
+LLM:
+
+I can see the following files in the current directory:
+- config
+- context
+- conversation 
+- launch
+- main.py
+- output
+- pid
+- readme
+- script
+
+Let me know if you'd like to explore any of these files in more detail!
+
+USER:
+

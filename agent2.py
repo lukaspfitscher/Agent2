@@ -3,7 +3,7 @@ provider="https://openrouter.ai/api/v1/chat/completions"
 model="anthropic/claude-3-5-sonnet"
 #model="openai/gpt-3.5-turbo"
 #model="google/gemini-3-flash-preview"
-api_key="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"
+api_key="your key"
 
 
 #<<

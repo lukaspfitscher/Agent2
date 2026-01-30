@@ -1,0 +1,1 @@
+make the file install.sh automaticly detect if its debian or arch and change commands accordingly

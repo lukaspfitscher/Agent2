@@ -6,7 +6,8 @@ Agent2 is a program that lets an LLM (Large language model)
 control a linux machine by writing/executing a bash script.
 
 Agent2 controls a machine by writing a bash script at the end of its response.
-The script will be extractet from the LLM response, execute and the output/error will be piped back to the LLM.
+The script will be extractet from response of the LLM, executed and the output/error will be piped back to the LLM.
+
 Agent2 tries to be minimalistic and focuses on essentials.
 
 Agent2 has no built-in tools and therefore relies on the host's CLI environment.
@@ -14,16 +15,16 @@ To ensure Agent2 is productive, provide it with the relevant tools
 and update the agents `context` so it knows how to utilize these tools.
 
 Under the "Useful software" section, there is a list of 
-useful software to make Agent2 great for general purpose workflows
+useful CLI tools to make Agent2 productiv for general purpose workflows
 
-Agent2 is compatible with major LLM providers:
+Agent2 is compatible nearly all LLM providers:
 Openrouter (all models), Anthropic (Claude), xAI (Grok), Google (Gemini) ...
 
 Agent2 is similar to Claude Code or Agent Zero but lightweight.
 
 ```
 > [!QUOTE]
-> A human can do a lot with a script, therefore, a agent can do it as well
+> A human can do a lot with a script/terminal, therefore, a agent can do it as well
 > The more agents/LLM advance the less of a framework is required
 > Agent2 is an Agent framework for Agents
 
@@ -32,18 +33,18 @@ Agent2 is programmed by Lukas Pfitscher in `Python`, Linux only and Open-source
 ```
 ## Setup / Examples
 ```text
-- Only 'request' and 'json' are reqired to run Agent2.
+- Only `python`, `request` and `json` are reqired to run Agent2.
 - To install these libraries execute `install.sh`
 ```
-
 ## What Agent2 is not
 - No built-in tools:
     With Bash the agent can use all installed CLI tools,
     if an additional tool is required, it needs to be installed and
-    added to the models context to make the model aware of the tool.
+    added to the LLMs context to make the LLM aware of the tool.
     This keeps Agent2 minimalistic and modular.
 - No fixed agent structure:
     Deciding which agent to spawn is up to the agent itself.
+    More about thie is in the "Multi agent support" secion
     Guidance can be given in the model context
 - CLI interfce only: No GUI overhead
 - No guardrails: 
@@ -56,19 +57,24 @@ Agent2 is programmed by Lukas Pfitscher in `Python`, Linux only and Open-source
 - Because Agent2 is a CLI tool it can run directly on 
   your local machine, server or in an environment(docker, podman...).
 ## Protocol overview
+- The file `context.txt` contains the context of the model, like "You are Agent2, a..."
 - The user can input after a `USER:`
-- For the User input Enter key is a normal new line, submit with ctrl+d (Standard Unix of "end of input")
-- The LLM responds with `AGENT:`
+- For user input, the Enter key is a normal new line,
+  submit with Ctrl+D (standard Unix convention for 'end of input')
+- The LLM responds with `AGENT:` 
 - The communication between LLM and SYSTEM is kept simple:
   The LLM triggers script execution by wrapping the script text around
-  `agent2_script_start+enter` and `enter+agent2_script_end` at the end of it's response.
-- The script gets execute and the output/error is pipe back to the LLM.
-- It up to the model itself to check the output file
-- The LLM has a command execution shell which runs in parralel to the LLM loop so it doesnt block Agent.
-
-- The script output is written in a file called output.
-- If the model doesnt requests another script the USER is promped.
+  `agent2_script_start+enter` and `enter+agent2_script_end` at the end of its response.
+- After that the script gets executed in a seperate shell. It doesnt block the agent.
+- The script output is written to the file called `output.txt`.
+- Agent2 waits 0.5 seconds for the command to finish and produce an output.
+- The output/error is piped back to the LLM after`SYSTEM:` message.
+- If the command takes longer Agent2 can but itself into sleep with his PID
+- Conversations are saved as plain text 
+  under `conversation.txt`
+- If the model doesn't request another script the user is promped.
 - The user can stop agent2 by pressing ctrl+c
+
 ## Example conversation
 Here is an example of a minimal USER-AGENT-SYSTEM conversation:
 
@@ -98,22 +104,20 @@ boot etc lib run...
 These are the entries in the current directory:
 boot etc lib run...
 
-Conversations are saved as plain text with timestamps as filenames
-under agent2/conversation
-
 ## Project directory structure
 Here is the directory structure of Agent2:
 
 ```text
 agent2/
-├─ readme             # Documentaion (the file you are currently reading)
-├─ launch             # Launch the agent
-├─ main.py            # Single python file (whole code)
-├─ config             # Contains api key, provider
-├─ script             # script that agent can write to and exectute
-├─ output             # output and error
-├─ conversation       # File where conversation is saved
-├─ context            # Context of the model
+├─ readme.md          # Documentaion (the file you are currently reading)
+├─ agent2.py          # Single python file (whole code)
+├─ instal.sh          # Instalation
+├─ config.py          # Contains api key, provider
+├─ prompt.txt         # Containing the Prompt
+├─ context.txt        # Context of the model
+├─ conversation.txt   # File where conversation is saved
+├─ script.sh          # Script that agent can write to and exectute
+├─ output.txt         # Output and error
 ```
 
 ## Useful software
@@ -153,24 +157,7 @@ Development tools:
 - Better tool for moving files (`rsync`)
 - Document conversion (`pandoc`)
 - Tools to pipe images/screenshots to visonmodel (python script)
-## program structure
-```text
-- read config settings
-- if prompt given jump to "LLM ask"
-- user input, send with ctrl+d
-- send conversation to LLM
-- get response
-- update conversation
-- if no script goto: user input
-- if wait command, wait
-- extract script text
-- save to execution file
-- execute script
-- get error/output
-- update conversation
-- clear execution file and error/output
-- goto: send conversation to LLM
-```
+
 ## Multi agent support
 - To make new agents make a copy of Agent2 directory
 - We keep this simple: one program, one agent, one conversation
@@ -184,7 +171,7 @@ cp path_agent_dir path_new_agent_dir
 cd path_new_agent_dir
 
 # Optionally remove existing conversations
-rm conversation
+rm conversation.txt
 
 # Add a prompt to the model by writing to the prompt file
 echo "You are a subagent, make a cleanup of..." > prompt
@@ -194,17 +181,18 @@ python3 agent2.py
 ```
 Agent2 can do this by itself just prompt it right.
 
-
 ## Q&A
 
 ### Why not using a psydo terminal
 Handling all the controll sequences gets to complicatet.
-Just writing to a files and executing is much simpler.
+Just writing to a files and executing is much simpler
+and the agent can do already a lot.
 
 ### What if i want to turn the agent into sleep
-It knows its own PID and can therefore but itself into sleep with
+Agent2 also gives the LLM its PID and can therefore but itself into sleep with
 kill -STOP <PID> && sleep 10 && kill -CONT <PID>
 
+### Chat tempalates
 
 
 

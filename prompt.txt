@@ -1,1 +1,1 @@
-make the file install.sh automaticly detect if its debian or arch and change commands accordingly
+This is a test to check if agent2 works properly. Do "ls -a"

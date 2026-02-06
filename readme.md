@@ -14,8 +14,8 @@ To ensure Agent2 is productive, provide it with the relevant tools
 and update the agents `context.txt` so it knows how to utilize these tools.
 Under the "How to add tools" section, there is an example.
 
-> A human can do a lot with a script/terminal, therefore, an agent can do it as well
-> The more agents/LLMs advance the less of a framework is required
+> A human can do a lot with a script/terminal, therefore, an agent can do it as well.
+> The more agents/LLMs advance the less of a framework is required.
 > Because it's so simple, Agent2 is an Agent framework for Agents
 
 Agent2 is programmed in `Python`, Open-source on [Github](https://github.com/lukaspfitscher/Agent2) and written by Lukas Pfitscher
@@ -88,7 +88,7 @@ agent2/
 ├─ conversation.txt   # File where the whole conversation is saved
 ├─ script.sh          # Script the agent can write and exectute
 ├─ output.txt         # Output and error of the script.sh
-├─ pid.txt            # Process ID, the agent can be pasued or killed by other agents 
+├─ pid.txt            # Process ID, the agent can be paused or killed by other agents 
 ├─ working_dir/       # The directory where the script is executed.
 ```
 
@@ -157,11 +157,14 @@ Deciding which agent to spawn is up to the agent itself.
 - No Multi-modal: a simple script can handle this: `python-llm`,`aichat`,`curl`
 - No memory / No RAG: not an essential feature
 
-
 ## Known issues:
-- Sometimes agent2 can stuck in a loop. There is countermechanism to prevent this. watch over or limit tockens / spending
-- Using agent2_script: mid script for explanation but this will trigger comand execution (model capapilitie issue)
-- Forgeting thing explicitly said in int context. (model capapilitie issue)
+- Infinite Loops: Agent2 can occasionally get stuck in a repetitive loop. 
+While there is a built-in counter-mechanism to prevent this, 
+you should monitor the agent or set token/spending limits to avoid excessive costs.
+- Mid-Response Triggers: Due to model limitations, 
+the agent may occasionally include the `agent2_script: ` string while "thinking" or explaining a process. 
+This will prematurely trigger command execution.
+- Context Retention: The agent may sometimes ignore or forget specific instructions explicitly stated in the initial context (a limitation of the underlying LLM's capabilities).
 
 ## Q&A and unsorted notes:
 
@@ -178,7 +181,7 @@ The correctness of stop tokens and role markers is crucial for stable behavior.
 If you change a model you also need to change these Marker under agent2.py.
 You can look them up on the web for each opensource model.
 
-### Will it work for other non debian based distros?
+### Will it work for other distros?
 Yes, just change the installer `install.sh` to you distros one.
 Everthing else stays the same.
 

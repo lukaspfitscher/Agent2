@@ -1,6 +1,6 @@
 api_key = "" #add your API-key here!
 provider = "https://openrouter.ai/api/v1/completions"
-model    = "moonshotai/kimi-k2.5"
+model = "moonshotai/kimi-k2.5"
 
 #if set to 1, it will read prompt.txt for the first prompt
 read_prompt_file = 0
@@ -23,8 +23,8 @@ im_pid    = 'agent2_pid'
 import os, sys, time, subprocess, json, requests
 #<<
 #>> vars
-#vars before functions cause they could be used in the functions
-d_a2 = os.path.dirname(os.path.abspath(__file__)) #path of agent2 dir
+#path of agent2 dir
+d_a2 = os.path.dirname(os.path.abspath(__file__))
 f_context       = d_a2 +'/context.txt'
 f_prompt        = d_a2 +'/prompt.txt'
 f_conversation  = d_a2 +'/conversation.txt'
@@ -57,7 +57,7 @@ def conv_add(txt): conv_add_file(txt); prnt(txt)
 #<<
 #<<
 #>> check if api key given
-if api_key == "": print("\033[91mEnter your API-Key in agent2.py\033[0m"); exit()
+if api_key == "": print("\033[91mNo API-Key! Enter your API-Key in agent2.py\033[0m"); exit()
 #<<
 #>> clear conversation
 write_file(f_conversation,"")
@@ -67,6 +67,7 @@ pid = str(os.getpid())
 write_file(f_pid,pid)
 
 user_note("SYSTEM:↵\n")
+# write context to conversation, add PID
 conv_add(im_system + read_file(f_context).replace(im_pid, pid) + im_end)
 
 #<<
@@ -91,7 +92,7 @@ while True:
     user_note("↵\nLLM:↵\n")
     conv_add(im_llm)
     for l in requests.post(provider,headers={"Authorization": "Bearer " + api_key},
-        json={"model": model, "prompt": read_conv(), "temperature": 1, "stream": True},stream=True,).iter_lines():
+        json={"model": model, "prompt": read_conv(), "temperature": 1, "stream": True}, stream=True,).iter_lines():
       if l.startswith(b"data: ") and l != b"data: [DONE]":
         conv_add((json.loads(l[6:])['choices'][0]).get('text','')) #add llm snipes
     conv_add(im_end)
@@ -107,13 +108,12 @@ while True:
     #>> subprocess
     with open(f_output, "w") as f:
       process = subprocess.Popen(
-        # or [f_script] if it's executable + has shebang
         ["bash", f_script],
         stdout=f,
         stderr=subprocess.STDOUT,
         #so it's immediately written to the output
         #otherwise it could happen that the agent reads a empty file
-        bufsize=0,  # Unbuffered
+        bufsize=0, # Unbuffered
         # detach from this Python process/session
         start_new_session=True,
         cwd=d_a2 + "/working_dir" )

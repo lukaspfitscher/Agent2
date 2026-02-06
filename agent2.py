@@ -30,6 +30,7 @@ f_prompt        = d_a2 +'/prompt.txt'
 f_conversation  = d_a2 +'/conversation.txt'
 f_script        = d_a2 +'/script.sh'
 f_output        = d_a2 +'/output.txt'
+f_pid           = d_a2 +'/pid.txt'
 #<<
 #>> defs
 
@@ -63,6 +64,7 @@ write_file(f_conversation,"")
 #<<
 #>> append context to conversation
 pid = str(os.getpid())
+write_file(f_pid,pid)
 
 user_note("SYSTEM:↵\n")
 conv_add(im_system + read_file(f_context).replace(im_pid, pid) + im_end)

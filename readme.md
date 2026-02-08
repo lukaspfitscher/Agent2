@@ -5,26 +5,40 @@ A lightweight agent that controls your computer by executing Bash scripts
 ## Introduction:
 
 - Agent2 controls a machine by writing a bash script at the end of its response.
-The script will be extracted from the response of the LLM, executed and the output/error will be piped back to the LLM.
+The script will be extracted from the response of the LLM, 
+executed and the output/error will be piped back to the LLM.
 
-- Agent2 tries to be minimalistic and focuses on essentials. With only ~130 lines of Python code, Agent2 is short, simple / very light / easy to understand /easy to extend and still quite capable.
+- Agent2 tries to be minimalistic and focuses on essentials. With only ~130 lines of Python code, 
+Agent2 is short, simple / very light / easy to understand /easy to extend and still quite capable.
 
 - Agent2 relies on the host's CLI environment.
-To ensure Agent2 is productive, provide it with the relevant tools
-and update the agents `context.txt` so it knows how to utilize these tools.
+To ensure Agent2 is productive, provide it with relevant tools
+and update `context.txt` so the LLM knows how to utilize these tools.
 Under the "How to add tools" section, there is an example.
 
 > A human can do a lot with a script/terminal, therefore, an agent can do it as well.
 > The more agents/LLMs advance the less of a framework is required.
 > Because it's so simple, Agent2 is an Agent framework for Agents
 
-Agent2 is programmed in `Python`, Open-source on [Github](https://github.com/lukaspfitscher/Agent2) and written by Lukas Pfitscher
+Agent2 is programmed in `Python`, Open-source on [Github](https://github.com/lukaspfitscher/Agent2)
+and written by Lukas Pfitscher
 
 ## Quick setup:
 
-- Only `python` and the `requests` library are required to run Agent2.
-- To install these libraries, go into the agent2 directory and execute `./install.sh`
-- or just paste this in your terminal:
+- Downlaod the repo
+```bash
+curl -L -o agent2.zip https://github.com/lukaspfitscher/Agent2/archive/refs/heads/main.zip
+```
+-Extract the directory
+```bash
+unzip agent2.zip
+```
+- Only `python3` and the `requests` library are required to run Agent2. To install these libraries, go into the agent2 directory and execute 
+```bash
+cd agent2
+./install.sh
+```
+or just paste the following command into your terminal:
 ```bash
 `apt update; apt install -y python3 python3-pip python3-requests
 ```
@@ -33,8 +47,8 @@ Agent2 is programmed in `Python`, Open-source on [Github](https://github.com/luk
 
 ## Environment:
 
-- Because Agent2 is a CLI tool it can run directly on 
-  your local machine, server, VPS or in an environment(docker, podman...).
+- Agent2 can run directly on your local machine, server, 
+VPS or in an environment (docker, podman...).
 
 ## Protocol overview:
 
@@ -45,9 +59,9 @@ Agent2 is programmed in `Python`, Open-source on [Github](https://github.com/luk
 - The user can input after a `INPUT:`
 - For user input, the Enter key is a normal new line,
   submit with Ctrl+D (standard Unix convention for 'end of input')
-- The LLM responds with `LLM:` 
+- The LLM responds with `LLM:`
 - The communication between LLM and SYSTEM is kept simple:
-  The LLM triggers script execution by writing: `agent2_script: `
+  The LLM triggers script execution by writing: `agent2_script_start`
 - After that the script gets executed in a separate shell and therefore doesn't block the agent.
 - The script output is written to the file called `output.txt`.
 - Agent2 waits 0.2 seconds for the command to finish and produce an output.
@@ -61,18 +75,18 @@ Agent2 is programmed in `Python`, Open-source on [Github](https://github.com/luk
 
 ## Example conversation:
 
-Here is an example of a minimal SYSTEM-USER-AGENT-TOOL conversation:
+Here is an example of a minimal SYSTEM-USER-LLM-TOOL conversation:
 
 `SYSTEM:` You are Agent2, an Agent that can execute bash scripts
-by writting `agent2_script: `
+by writing `agent2_script_start`
 
 `USER:` list current files!
 
-`LLM:` agent2_script: ls
+`LLM:` agent2_script_start ls -a
 
-`TOOL:` boot etc lib run...
+`TOOL:` . .. boot etc lib run...
 
-`LLM:` These are the entries in the current directory: boot etc lib run...
+`LLM:` Entries in the current directory: boot etc lib run...
 
 ## Project directory structure:
 
@@ -80,7 +94,7 @@ Here is the directory structure of Agent2:
 
 ```text
 agent2/
-├─ install.sh         # Instalation script
+├─ install.sh         # Installation script
 ├─ agent2.py          # Contains config + whole python code (single file)
 ├─ readme.md          # Readme (the file you are currently reading)
 ├─ context.txt        # Context of the model
@@ -89,7 +103,7 @@ agent2/
 ├─ script.sh          # Script the agent can write and exectute
 ├─ output.txt         # Output and error of the script.sh
 ├─ pid.txt            # Process ID, the agent can be paused or killed by other agents 
-├─ working_dir/       # The directory where the script is executed.
+├─ working_dir/       # Directory where the script is executed
 ```
 
 ## How to add tools:
@@ -118,7 +132,7 @@ You can search the web with ddgr, curl, lynx
 - To make new agents make a copy of Agent2 directory
 - Guidance can be given in the model context
 - We keep this simple: one program, one agent, one conversation
-- Integrating multiagent directly in the program makes everthing much more complex
+- Integrating multiagent directly in the program makes everything much more complex
 
 ### Create a new agent:
 
@@ -142,6 +156,17 @@ Agent2 doesnt integrate a fixed agent structure.
 Agent2 can do this by itself just prompt it right.
 Deciding which agent to spawn is up to the agent itself.
 
+## Known issues:
+- Infinite Loops: Agent2 can occasionally get stuck in a repetitive loop. 
+There is no built-in counter-mechanism to prevent this. Therefore
+you should monitor the agent or limit token/spending.
+- Mid-Response Triggers: Due to model limitations, 
+the agent may occasionally include the `agent2_script_start` string while "thinking" or explaining a process. This will prematurely trigger command execution.
+- Context Retention: The agent may sometimes ignore or forget specific instructions 
+explicitly stated in the initial context (a limitation of the underlying LLM's capabilities).
+- If not explicitly said "script executed" to the LLM, 
+it will think it didn't worked and repeat itself over and over.
+
 ## What Agent2 is not:
 - No built-in tools:
     With Bash the agent can use all installed CLI tools,
@@ -157,47 +182,39 @@ Deciding which agent to spawn is up to the agent itself.
 - No Multi-modal: a simple script can handle this: `python-llm`,`aichat`,`curl`
 - No memory / No RAG: not an essential feature
 
-## Known issues:
-- Infinite Loops: Agent2 can occasionally get stuck in a repetitive loop. 
-While there is a built-in counter-mechanism to prevent this, 
-you should monitor the agent or set token/spending limits to avoid excessive costs.
-- Mid-Response Triggers: Due to model limitations, 
-the agent may occasionally include the `agent2_script: ` string while "thinking" or explaining a process. 
-This will prematurely trigger command execution.
-- Context Retention: The agent may sometimes ignore or forget specific instructions explicitly stated in the initial context (a limitation of the underlying LLM's capabilities).
-
 ## Q&A and unsorted notes:
 
 ### Why not using a pseudo terminal?
-Handling all the controll sequences gets to complicatet.
-Just writing to a files and executing is much simpler.
-With this the agent can do already a lot. It doesnt need a pseudo terminal.
+Handling all the control sequences gets too complicated.
+Just writing to a file and executing it is much simpler.
+With this, the agent can do already a lot. It doesn't need a "pseudo-terminal".
 
-### Chat tempalates:
-Just writing `user:` or `system:` wont work.
+### Chat templates:
+Just writing `user:` or `system:` won't work.
 Every model needs a specific chat format.
-Without this format the model behaves terrible!
+Without this format the model behaves terribly!
 The correctness of stop tokens and role markers is crucial for stable behavior.
-If you change a model you also need to change these Marker under agent2.py.
+If you change a model you also need to change these markers in agent2.py.
 You can look them up on the web for each opensource model.
 
 ### Will it work for other distros?
-Yes, just change the installer `install.sh` to you distros one.
+Yes, just change `install.sh` to your distro’s installer.
 Everthing else stays the same.
 
-### What if i want to turn the agent into sleep?
-Agent2 also gives the LLM its own PID and can therefore but itself into sleep with
-```text
-kill -STOP <PID> && sleep 10 && kill -CONT <PID>
+### What if the agent needs so wait for a certain time, like for a download to finish?
+Agent2 also gives the LLM its own PID and can therefore but itself to sleep with
+```bash
+PID="$(< ../pid.txt)" #read pid from file
+kill -STOP "$PID" && sleep 10 && kill -CONT "$PID" 
 ```
-This is usefull for reminders, counters and events.
+This is useful for waiting for commands (like waiting for downloads, monitoring), reminders and counters.
+The PID is saved in the `PID.txt` file so other programs/agents have control over the current agent.
 
 ### Why wait exactly 0.2 seconds for the script output?
-This was a deliberate design choice because it is simple and effective. Integrating command execution flags is complicated and often fails to cover every scenario due to numerous edge cases. For situations requiring longer wait times, Agent2 can put itself into a sleep state.
+This was a deliberate design choice because it is simple and effective. 
+Integrating command execution flags is complicated and often fails to cover every scenario 
+due to numerous edge cases (some commands continue writing and therfore never finish or a script can contain multiple programs ). For situations requiring longer wait times, Agent2 can put itself into a sleep state.
 
 ### Is Agent2 similar to Claude Code or Agent Zero?
 Yes, exactly, but more lightweight.
 
-### Would it be great to also give the LLM the PID of the script?
-The script can do this by iteself by adding `echo "Shell PID: $$"`.
-For most commands this is not needed becasue they will finish and the shell close automaticly.

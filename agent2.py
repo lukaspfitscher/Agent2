@@ -1,4 +1,4 @@
-api_key = "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" #add your API key here!
+api_key = "" #add your API key here!
 provider = "https://openrouter.ai/api/v1/completions"
 model    = "moonshotai/kimi-k2.5"
 max_token = 10000

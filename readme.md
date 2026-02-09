@@ -17,33 +17,38 @@ and update `context.txt` so the LLM knows how to utilize these tools.
 Under the "How to add tools" section, there is an example.
 
 > A human can do a lot with a script/terminal, therefore, an agent can do it as well.
-> The more agents/LLMs advance the less of a framework is required.
+> The more agents/LLM's advance the less framework is required.
 > Because it's so simple, Agent2 is an Agent framework for Agents
 
-Agent2 is programmed in `Python`, Open-source on [Github](https://github.com/lukaspfitscher/Agent2)
+Agent2 is programmed in Python, Open-source on [Github](https://github.com/lukaspfitscher/Agent2)
 and written by Lukas Pfitscher
 
 ## Quick setup:
 
-- Downlaod the repo
+- Download the Repository
 ```bash
 curl -L -o agent2.zip https://github.com/lukaspfitscher/Agent2/archive/refs/heads/main.zip
 ```
--Extract the directory
+- Extract the directory, and remove the .zip file, rename it
 ```bash
-unzip agent2.zip
+unzip agent2.zip; rm agent2.zip; mv Agent2-main agent2
 ```
 - Only `python3` and the `requests` library are required to run Agent2. To install these libraries, go into the agent2 directory and execute 
 ```bash
-cd agent2
-./install.sh
+cd agent2; ./install.sh
 ```
 or just paste the following command into your terminal:
 ```bash
-`apt update; apt install -y python3 python3-pip python3-requests
+apt update; apt install -y python3 python3-pip python3-requests
 ```
 - Next add your Openrouter API key in the agent2.py file.
-- Launch Agent2 with `python3 agent2.py` (Be careful! It can control your system! )
+
+- Optionally, also adjust the token limit in the agent2.py file.
+
+- Launch Agent2 with (Be careful! It can control your system!):
+```bash
+python3 agent2.py
+```
 
 ## Environment:
 
@@ -55,22 +60,22 @@ VPS or in an environment (docker, podman...).
 - The file `context.txt` contains the context of the model, like "You are Agent2, a..."
 - Everything written to the terminal or in the conversation.txt 
   file is exactly as it is seen by the LLM,
-  except the yellow notes in the terminal for better visualization.
-- The user can input after a `INPUT:`
+  except the yellow notes in the terminal for better user visualization.
+- The user can input after an `INPUT:`
 - For user input, the Enter key is a normal new line,
   submit with Ctrl+D (standard Unix convention for 'end of input')
 - The LLM responds with `LLM:`
-- The communication between LLM and SYSTEM is kept simple:
+- The communication between LLM and host is kept simple:
   The LLM triggers script execution by writing: `agent2_script_start`
-- After that the script gets executed in a separate shell and therefore doesn't block the agent.
-- The script output is written to the file called `output.txt`.
+- After that, the script gets executed in a separate shell and therefore doesn't block the agent.
+- The script output is written to the file `output.txt`.
 - Agent2 waits 0.2 seconds for the command to finish and produce an output.
-- If the command takes longer, Agent2 can put itself to sleep with its PID.
+- If the command takes longer, Agent2 can put itself to sleep with its own PID.
 - The output/error is piped back to the LLM after a `TOOL:` message.
 - Conversations are saved as plain text (no json) in `conversation.txt`.
 - The text in `conversation.txt` is exactly as the model sees it.
   The conversation includes all the start and stop markers.
-- If the model doesn't request another script, the user is prompted.
+- If the model doesn't request another script, the user is prompted for input.
 - The user can stop Agent2 by pressing Ctrl+C
 
 ## Example conversation:
@@ -78,7 +83,7 @@ VPS or in an environment (docker, podman...).
 Here is an example of a minimal SYSTEM-USER-LLM-TOOL conversation:
 
 `SYSTEM:` You are Agent2, an Agent that can execute bash scripts
-by writing `agent2_script_start`
+by writing `agent2_script_start` at the end of your response...
 
 `USER:` list current files!
 
@@ -100,9 +105,9 @@ agent2/
 ├─ context.txt        # Context of the model
 ├─ prompt.txt         # The initial prompt
 ├─ conversation.txt   # File where the whole conversation is saved
-├─ script.sh          # Script the agent can write and exectute
+├─ script.sh          # Script the agent can write and execute
 ├─ output.txt         # Output and error of the script.sh
-├─ pid.txt            # Process ID, the agent can be paused or killed by other agents 
+├─ pid.txt            # Process ID, the agent can be paused or killed by other agents
 ├─ working_dir/       # Directory where the script is executed
 ```
 
@@ -112,27 +117,27 @@ Agent2 relies on the host's CLI environment.
 To ensure Agent2 is productive, provide it with the relevant tools
 and update the agent's `context.txt` so it knows how to utilize these tools.
 
-Here is an example how to give Agent2 web search capabilities.
+Here is an example of how to give Agent2 web search capabilities.
 
 First install the software as usual:
 
 ```Bash
-apt install -y ddgr # Get raw website content
-apt install -y curl # Retrieve web search results (`ddgr -x`)
+apt install -y ddgr # Get web search results (DuckDuckGo search;`ddgr -x`)
+apt install -y curl # Get raw website content
 apt install -y lynx # Extract useful text (`curl -s https://www.x.com | lynx -stdin -dump`)
 ```
 
-Add a note to `context.txt` so the model knows it can use these tools like this:
+Add a note to `context.txt` so the model knows it can use these tools:
 ```text
 You can search the web with ddgr, curl, lynx
 ```
 
-## Multi agent support:
+## Multi-agent support:
 
-- To make new agents make a copy of Agent2 directory
+- To make new agents, make a copy of Agent2 directory
 - Guidance can be given in the model context
 - We keep this simple: one program, one agent, one conversation
-- Integrating multiagent directly in the program makes everything much more complex
+- Integrating multi-agent directly in the program makes everything much more complex
 
 ### Create a new agent:
 
@@ -146,32 +151,36 @@ cd path_new_agent_dir
 # Optionally remove existing conversation
 > conversation.txt
 
+# clear the agents working directory
+rm -rf working_dir/*
+
 # Add a prompt to the model by writing to the prompt file
-echo "You are a subagent, make a cleanup of..." > prompt
+echo "You are a subagent, make a cleanup of..." > prompt.txt
 
 # Launch Agent2:
 python3 agent2.py
 ```
-Agent2 doesnt integrate a fixed agent structure.
+Agent2 doesn't integrate a fixed agent structure.
 Agent2 can do this by itself just prompt it right.
 Deciding which agent to spawn is up to the agent itself.
 
 ## Known issues:
-- Infinite Loops: Agent2 can occasionally get stuck in a repetitive loop. 
+
+- Agent2 can occasionally get stuck in a repetitive loop. 
 There is no built-in counter-mechanism to prevent this. Therefore
 you should monitor the agent or limit token/spending.
 - Mid-Response Triggers: Due to model limitations, 
 the agent may occasionally include the `agent2_script_start` string while "thinking" or explaining a process. This will prematurely trigger command execution.
 - Context Retention: The agent may sometimes ignore or forget specific instructions 
 explicitly stated in the initial context (a limitation of the underlying LLM's capabilities).
-- If not explicitly said "script executed" to the LLM, 
-it will think it didn't worked and repeat itself over and over.
+- If the LLM is not explicitly told 'script executed' to the LLM, 
+it will think it didn't work and repeat itself over and over.
 
 ## What Agent2 is not:
 - No built-in tools:
     With Bash the agent can use all installed CLI tools,
     if an additional tool is required, it needs to be installed and
-    added to the LLMs context to make the LLM aware of the tool.
+    added to the LLM's context to make the LLM aware of the tool.
     This keeps Agent2 minimalistic and modular.
 
 - CLI interface only: No GUI overhead
@@ -186,8 +195,8 @@ it will think it didn't worked and repeat itself over and over.
 
 ### Why not using a pseudo terminal?
 Handling all the control sequences gets too complicated.
-Just writing to a file and executing it is much simpler.
-With this, the agent can do already a lot. It doesn't need a "pseudo-terminal".
+Writing to a file and executing it is much simpler.
+With this, the agent can already do a lot. It doesn't need a "pseudo-terminal".
 
 ### Chat templates:
 Just writing `user:` or `system:` won't work.
@@ -195,26 +204,30 @@ Every model needs a specific chat format.
 Without this format the model behaves terribly!
 The correctness of stop tokens and role markers is crucial for stable behavior.
 If you change a model you also need to change these markers in agent2.py.
-You can look them up on the web for each opensource model.
+You can look them up on the web for each open-source model.
 
 ### Will it work for other distros?
 Yes, just change `install.sh` to your distro’s installer.
-Everthing else stays the same.
+Everything else stays the same.
 
-### What if the agent needs so wait for a certain time, like for a download to finish?
-Agent2 also gives the LLM its own PID and can therefore but itself to sleep with
+### What if the agent needs to wait for a certain time, like for a download to finish?
+Agent2 also gives the LLM its own PID and can therefore put itself to sleep with
 ```bash
 PID="$(< ../pid.txt)" #read pid from file
 kill -STOP "$PID" && sleep 10 && kill -CONT "$PID" 
 ```
 This is useful for waiting for commands (like waiting for downloads, monitoring), reminders and counters.
-The PID is saved in the `PID.txt` file so other programs/agents have control over the current agent.
+The PID is saved in the `pid.txt` file so other programs/agents have control over the current agent.
 
 ### Why wait exactly 0.2 seconds for the script output?
-This was a deliberate design choice because it is simple and effective. 
+This was a deliberate design choice because it is simple and effective.
+0.2s handles the fast commands (ls, cat, echo, etc.) — which is most commands.
 Integrating command execution flags is complicated and often fails to cover every scenario 
-due to numerous edge cases (some commands continue writing and therfore never finish or a script can contain multiple programs ). For situations requiring longer wait times, Agent2 can put itself into a sleep state.
+due to numerous edge cases (some commands continue writing and therefore never finish, or a script can contain multiple programs). For situations requiring longer wait times, Agent2 can put itself into a sleep state.
 
 ### Is Agent2 similar to Claude Code or Agent Zero?
 Yes, exactly, but more lightweight.
 
+### Would it be useful to also give the LLM the PID of the script?
+The script can do this by itself by adding `echo "Shell PID: $$"`.
+For most commands this is not needed because they will finish and the shell closes automatically.

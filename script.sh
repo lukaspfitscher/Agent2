@@ -1,0 +1,1 @@
+ ls -a && echo "[SUCCESS] ls -a completed"

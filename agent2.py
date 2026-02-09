@@ -1,6 +1,7 @@
-api_key = "" #add your API key here!
+api_key = "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" #add your API key here!
 provider = "https://openrouter.ai/api/v1/completions"
 model    = "moonshotai/kimi-k2.5"
+max_token = 10000
 
 # if set to 1, it will read prompt.txt for the first prompt.
 read_prompt_file = 0
@@ -10,12 +11,13 @@ read_prompt_file = 0
 im_system = "<|im_system|>system<|im_middle|>"
 im_user   = "<|im_user|>user<|im_middle|>"
 im_llm    = "<|im_assistant|>assistant<|im_middle|>"
-im_tool   = "<|im_tool|>tool<|im_middle|>"
+im_tool   = "<|im_user|>user<|im_middle|>" #"<|im_tool|>tool<|im_middle|>"
 im_end    = "<|im_end|>"
 #<<
 #>> agent2 markers
-im_script = 'agent2_script_start'
-im_pid    = 'agent2_pid'
+im_script        = "agent2_script_start"
+im_pid           = "agent2_pid"
+tool_explanation = "This is an automatically generated message. Script executed. Here is the output (if any):"
 #<<
 #>> inits
 #>> libs
@@ -24,13 +26,13 @@ import os, sys, requests, time, subprocess, json
 #>> vars
 # path of the agent2 dir
 d_a2 = os.path.dirname(os.path.abspath(__file__))
-f_context       = d_a2 +'/context.txt'
-f_prompt        = d_a2 +'/prompt.txt'
-f_conversation  = d_a2 +'/conversation.txt'
-f_script        = d_a2 +'/script.sh'
-f_output        = d_a2 +'/output.txt'
-f_pid           = d_a2 +'/pid.txt'
-d_working       = d_a2 +'/working_dir'
+f_context       = d_a2 +"/context.txt"
+f_prompt        = d_a2 +"/prompt.txt"
+f_conversation  = d_a2 +"/conversation.txt"
+f_script        = d_a2 +"/script.sh"
+f_output        = d_a2 +"/output.txt"
+f_pid           = d_a2 +"/pid.txt"
+d_working       = d_a2 +"/working_dir"
 #<<
 #>> defs
 
@@ -62,7 +64,7 @@ def conv_add(txt): conv_add_file(txt); prnt(txt)
 #<<
 #<<
 #>> check if API key given
-if api_key == "": print("\033[91mNo API key! Enter your API key in agent2.py\033[0m"); exit()
+if api_key == "": print("\033[91mNo API key! Enter your API key in agent2.py. Program terminated!\033[0m"); exit()
 #<<
 #>> clear conversation
 write_file(f_conversation,"")
@@ -100,6 +102,8 @@ while True:
         json={"model": model, "prompt": read_conv(), "temperature": 1, "stream": True}, stream=True,).iter_lines():
       if l.startswith(b"data: ") and l != b"data: [DONE]":
         conv_add((json.loads(l[6:])['choices'][0]).get('text','')) #add LLM snippets
+        if len(read_conv()) // 4 > max_token: print("\033[91mtoken limit surpassed. Program terminated!\033[0m"); exit()
+
     conv_add(im_end)
     #<<
     #>> extract command
@@ -128,7 +132,7 @@ while True:
     #<<
     #>> command feedbacks
     user_note("↵\nTOOL:↵\n")
-    conv_add(im_tool+"Script executed. Here is the output (if any):"+read_file(f_output)+im_end)
+    conv_add(im_tool+tool_explanation+read_file(f_output)+im_end)
     #conv_add(+read_file(f_output))
     # it keeps writing to this file, so it never gets cleared automatically
     write_file(f_output,"")

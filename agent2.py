@@ -1,7 +1,9 @@
-api_key = "" #add your API key here!
-provider = "https://openrouter.ai/api/v1/completions"
-model    = "moonshotai/kimi-k2.5"
+#add your API key here!
+api_key = ""
+provider  = "https://openrouter.ai/api/v1/completions"
+model     = "moonshotai/kimi-k2.5"
 max_token = 10000
+temperature = 0
 
 # if set to 1, it will read prompt.txt for the first prompt.
 read_prompt_file = 0
@@ -16,13 +18,10 @@ im_end    = "<|im_end|>"
 #<<
 #>> agent2 markers
 im_script        = "agent2_script_start"
-im_pid           = "agent2_pid"
 tool_explanation = "This is an automatically generated message. Script executed. Here is the output (if any):"
 #<<
 #>> inits
-#>> libs
 import os, sys, requests, time, subprocess, json
-#<<
 #>> vars
 # path of the agent2 dir
 d_a2 = os.path.dirname(os.path.abspath(__file__))
@@ -41,7 +40,7 @@ def prnt(txt): print(txt, end="", flush=True)
 def user_note(text): prnt(f"\033[93m{text}\033[0m")
 
 #def read_file(name):
-  #with open(name, "r", encoding="latin-1") as f:
+#  with open(name, "r", encoding="latin-1") as f:
 #  with open(name, "r", encoding="utf-8") as f:
 #    return f.read()
 
@@ -52,12 +51,10 @@ def read_file(name):
 def read_conv(): return read_file(f_conversation)
 
 def write_file(name,txt):
-  with open(name, 'w') as f: 
-    f.write(txt); f.flush()
+  with open(name, 'w') as f: f.write(txt); f.flush()
 
 def conv_add_file(txt):
-  with open(f_conversation, "a") as f:
-    f.write(txt); f.flush()
+  with open(f_conversation, "a") as f: f.write(txt); f.flush()
 
 def conv_add(txt): conv_add_file(txt); prnt(txt)
 
@@ -99,7 +96,7 @@ while True:
     user_note("↵\nLLM:↵\n")
     conv_add(im_llm)
     for l in requests.post(provider,headers={"Authorization": "Bearer " + api_key},
-        json={"model": model, "prompt": read_conv(), "temperature": 1, "stream": True}, stream=True,).iter_lines():
+        json={"model": model, "prompt": read_conv(), "temperature": temperature,"stop": [im_end], "stream": True}, stream=True,).iter_lines():
       if l.startswith(b"data: ") and l != b"data: [DONE]":
         conv_add((json.loads(l[6:])['choices'][0]).get('text','')) #add LLM snippets
         if len(read_conv()) // 4 > max_token: print("\033[91mtoken limit surpassed. Program terminated!\033[0m"); exit()

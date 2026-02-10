@@ -7,9 +7,10 @@ A lightweight agent that controls your computer by executing Bash scripts
 - Agent2 controls a machine by writing a bash script at the end of its response.
 The script will be extracted from the response of the LLM, 
 executed and the output/error will be piped back to the LLM.
+Thats it nothing more!
 
 - Agent2 tries to be minimalistic and focuses on essentials. With only ~130 lines of Python code, 
-Agent2 is short, simple / very light / easy to understand /easy to extend and still quite capable.
+Agent2 is short, simple / very light / easy to understand / easy to extend and still quite capable.
 
 - Agent2 relies on the host's CLI environment.
 To ensure Agent2 is productive, provide it with relevant tools
@@ -29,21 +30,21 @@ and written by Lukas Pfitscher
 ```bash
 curl -L -o agent2.zip https://github.com/lukaspfitscher/Agent2/archive/refs/heads/main.zip
 ```
-- Extract the directory, and remove the .zip file, rename it
+- Extract the directory, remove the .zip file and rename it:
 ```bash
 unzip agent2.zip; rm agent2.zip; mv Agent2-main agent2
 ```
-- Only `python3` and the `requests` library are required to run Agent2. To install these libraries, go into the agent2 directory and execute 
+- Only `python3` and the `requests` library are required to run Agent2. To install do:
 ```bash
-cd agent2; ./install.sh
+cd agent2;chmod +x install.sh; ./install.sh
 ```
 or just paste the following command into your terminal:
 ```bash
 apt update; apt install -y python3 python3-pip python3-requests
 ```
-- Next add your Openrouter API key in the agent2.py file.
+- Next add your Openrouter API key in the `agent2.py` file.
 
-- Optionally, also adjust the token limit in the agent2.py file.
+- Optionally, also adjust the token limit in the `agent2.py` file.
 
 - Launch Agent2 with (Be careful! It can control your system!):
 ```bash
@@ -101,14 +102,14 @@ Here is the directory structure of Agent2:
 agent2/
 ├─ install.sh         # Installation script
 ├─ agent2.py          # Contains config + whole python code (single file)
-├─ readme.md          # Readme (the file you are currently reading)
-├─ context.txt        # Context of the model
+├─ readme.md          # Readme / documentation (the file you are currently reading)
+├─ context.txt        # Context of the model ( like role description )
 ├─ prompt.txt         # The initial prompt
 ├─ conversation.txt   # File where the whole conversation is saved
 ├─ script.sh          # Script the agent can write and execute
 ├─ output.txt         # Output and error of the script.sh
 ├─ pid.txt            # Process ID, the agent can be paused or killed by other agents
-├─ working_dir/       # Directory where the script is executed
+├─ working_dir/       # Working directory of the agent; starting path of the script
 ```
 
 ## How to add tools:
@@ -167,13 +168,14 @@ Deciding which agent to spawn is up to the agent itself.
 ## Known issues:
 
 - Agent2 can occasionally get stuck in a repetitive loop. 
-There is no built-in counter-mechanism to prevent this. Therefore
-you should monitor the agent or limit token/spending.
+There is a built-in counter-mechanism to prevent this. 
+Set `max_tokens` in `agent2.py` to limit token/spending.
 - Mid-Response Triggers: Due to model limitations, 
-the agent may occasionally include the `agent2_script_start` string while "thinking" or explaining a process. This will prematurely trigger command execution.
+the agent may occasionally include the `agent2_script_start` string while "thinking" or explaining a process.
+This will prematurely trigger command execution.
 - Context Retention: The agent may sometimes ignore or forget specific instructions 
 explicitly stated in the initial context (a limitation of the underlying LLM's capabilities).
-- If the LLM is not explicitly told 'script executed' to the LLM, 
+- If the LLM is not explicitly told 'script executed', 
 it will think it didn't work and repeat itself over and over.
 
 ## What Agent2 is not:
@@ -221,9 +223,11 @@ The PID is saved in the `pid.txt` file so other programs/agents have control ove
 
 ### Why wait exactly 0.2 seconds for the script output?
 This was a deliberate design choice because it is simple and effective.
-0.2s handles the fast commands (ls, cat, echo, etc.) — which is most commands.
+0.2s handles the fast commands (ls, cat, echo, etc.) — which are most commands.
 Integrating command execution flags is complicated and often fails to cover every scenario 
-due to numerous edge cases (some commands continue writing and therefore never finish, or a script can contain multiple programs). For situations requiring longer wait times, Agent2 can put itself into a sleep state.
+due to numerous edge cases (some commands continue writing and therefore never finish, 
+or a script can contain multiple programs).
+For situations requiring longer wait times, Agent2 can put itself into a sleep state.
 
 ### Is Agent2 similar to Claude Code or Agent Zero?
 Yes, exactly, but more lightweight.
@@ -231,3 +235,18 @@ Yes, exactly, but more lightweight.
 ### Would it be useful to also give the LLM the PID of the script?
 The script can do this by itself by adding `echo "Shell PID: $$"`.
 For most commands this is not needed because they will finish and the shell closes automatically.
+
+### Why not use common chat completion and JSON chat templates?
+We believe this overcomplicates things. 
+An LLM is fundamentally text in, text out — 
+and we should treat it as such. Because we use completion mode, 
+only open-source models are available. 
+Closed-source models don't publish their chat templates, 
+so they aren't compatible with this project. 
+However, you can easily change this — 
+just ask an LLM to modify the agent2.py file.
+
+### Why is the context.txt so long?
+Turns out you can give the LLM long instructions 
+and it will actually perform better. 
+These LLM context texts are carefully tested to work properly.

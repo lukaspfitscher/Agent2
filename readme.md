@@ -1,6 +1,6 @@
 # Agent2
 
-A lightweight AI agent can control your computer by executing Bash scripts
+A lightweight AI agent that can control your computer by executing Bash scripts
 
 ## Introduction:
 

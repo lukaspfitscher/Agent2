@@ -1,16 +1,16 @@
 # Agent2
 
-A lightweight AI agent that can control your computer by executing Bash scripts
+A lightweight AI agent that can control your machine by executing Bash scripts
 
 ## Introduction:
 
 - Agent2 controls a machine by writing a bash script at the end of its response.
 The script will be extracted from the response of the LLM, 
 executed and the output/error will be piped back to the LLM.
-Thats it nothing more!
+That's it nothing more!
 
-- Agent2 tries to be minimalistic and focuses on essentials. With only ~130 lines of Python code, 
-Agent2 is short, simple / very light / easy to understand / easy to extend and still quite capable.
+- Agent2 tries to be minimalistic and focuses on the essentials. With only ~130 lines of Python code, 
+Agent2 is short, simple, very light, easy to understand, hackable, easy to extend and still quite capable.
 
 - Agent2 relies on the host's CLI environment.
 To ensure Agent2 is productive, provide it with relevant tools
@@ -18,11 +18,11 @@ and update `context.txt` so the LLM knows how to utilize these tools.
 Under the "How to add tools" section, there is an example.
 
 > A human can do a lot with a script/terminal, therefore, an agent can do it as well.
-> The more agents/LLM's advance the less framework is required.
-> Because it's so simple, Agent2 is an Agent framework for Agents
+> The more agents/LLMs advance the less framework is required.
+> Because it's so simple, Agent2 is an agent framework for agents
 
 Agent2 is programmed in Python, Open-source on [Github](https://github.com/lukaspfitscher/Agent2)
-and written by Lukas Pfitscher (feedback is appreciated: lukaspfitscher1996@gmail.com)"
+and was written by Lukas Pfitscher (feedback is appreciated: lukaspfitscher1996@gmail.com)"
 
 ## Quick setup:
 
@@ -51,21 +51,10 @@ apt update; apt install -y python3 python3-pip python3-requests
 python3 agent2.py
 ```
 
-## System prompt / context:
-
-Here is the discription how Agent2 behaves:
-
-You are Agent2, the best tinkerer, engineer, scientific researcher and coding agent.
-- You possess common sense, are logic-driven, and are helpful.
-- You remain concise and precise with your answers.
-- No feelings. No guessing. Rely on hard scientific truths and facts.
-- You are maximally truth-seeking, even if the subject is controversial.
-- You think in a clean, structured way. You plan / make todo lists / think step by step for the requested task if needed.
-
 ## Environment:
 
-- Agent2 can run directly on your local machine, server, 
-VPS or in an environment (docker, podman...).
+- Agent2 can run on any linux system (directly on your local machine, server, 
+VPS or in an environment: docker, podman...).
 
 ## Protocol overview:
 
@@ -73,13 +62,13 @@ VPS or in an environment (docker, podman...).
 - Everything written to the terminal or in the `conversation.txt`.
   file is exactly as it is seen by the LLM,
   except the yellow notes in the terminal for better user visualization.
-- The user can input after an `INPUT:`.
+- The user can input after an `INPUT:` or use the `prompt.txt` file for the first prompt (useful for automation).
 - For user input, the Enter key is a normal new line,
   submit with Ctrl+D (standard Unix convention for 'end of input').
 - The LLM responds with `LLM:`.
 - The communication between LLM and host is kept simple:
   The LLM triggers script execution by writing: `agent2_script_start`
-- After the last `agent2_script_start` all the text is copied into `script.sh`
+- Everthing after the last `agent2_script_start` is interpreted as a bash script
 - Before every execution the script is reset (path doesnt persist, no environment variables persist).
 - After that, the script gets executed in a separate shell and therefore doesn't block the agent.
 - The script always starts in the `working_dir` directory.
@@ -90,7 +79,7 @@ VPS or in an environment (docker, podman...).
 - Conversations are saved as plain text (no json) in `conversation.txt`.
 - The text in `conversation.txt` is exactly as the model sees it.
   The conversation includes all the start and stop markers.
-- If the model doesn't request another script, the user is prompted for input.
+- If the model doesn't request another script, the user is prompted for further insrtuctions.
 - The user can stop Agent2 by pressing Ctrl+C.
 
 ## Example conversation:
@@ -120,7 +109,6 @@ agent2/
 ├─ context.txt      # Context of the model ( like role description )
 ├─ prompt.txt       # The initial prompt
 ├─ conversation.txt # File where the whole conversation is saved
-├─ script.sh        # Script the agent can write to and execute
 ├─ output.txt       # Output and error of the script.sh
 ├─ pid.txt          # Process ID, the agent can be paused or killed by other agents
 ├─ working_dir/     # Working directory of the agent; starting path of the script
@@ -149,9 +137,9 @@ You can search the web with ddgr, curl, lynx
 
 ## Multi-agent support:
 
-- New agents can be made by simply coping Agent2's directory.
+- New agents can be made by simply copying Agent2's directory.
 - Guidance can be given in the model context.
-- This is keept simple: one program, one agent, one conversation. 
+- This is kept simple: one program, one agent, one conversation. 
 Integrating multi-agent directly in the program makes everything much more complex.
 
 ### Create a new agent:
@@ -179,6 +167,20 @@ Agent2 doesn't integrate a fixed agent structure.
 Deciding which agent to spawn is up to the agent itself.
 Agent2 can do this by itself just prompt it right.
 
+
+## System prompt / context:
+
+You can just past the whole `readme.md` into the `context.txt` file of the agent. So it knows about itself.
+
+Here is the description how Agent2 behaves:
+
+You are Agent2, the best tinkerer, engineer, scientific researcher and coding agent.
+- You possess common sense, are logic-driven, and are helpful.
+- You remain concise and precise with your answers.
+- No feelings. No guessing. Rely on hard scientific truths and facts.
+- You are maximally truth-seeking, even if the subject is controversial.
+- You think in a clean, structured way. You plan / make todo lists / think step by step for the requested task if needed.
+
 ## Known issues:
 
 - Agent2 can occasionally get stuck in a repetitive loop. 
@@ -200,7 +202,7 @@ it will think it didn't work and repeat itself over and over.
     This keeps Agent2 minimalistic and modular.
 
 - CLI interface only: No GUI overhead
-- No guardrails: 
+- No guardrails / security: 
     This is done by user restriction and environments (docker, podman...).
     Linux offers lots of tools to restrict a user.
 - No MCP integration: a CLI tool exists for this "`mcp-cli`"
@@ -247,7 +249,7 @@ or a script can contain multiple programs).
 For situations requiring longer wait times, Agent2 can put itself into a sleep state.
 
 ### Is Agent2 similar to Claude Code or Agent Zero?
-Yes, exactly, but more lightweight.
+Yes, but its more like compareing a bicycle with a Tesla
 
 ### Would it be useful to also give the LLM the PID of the script?
 The script can do this by itself by adding `echo "Shell PID: $$"`.
@@ -267,3 +269,6 @@ just ask an LLM to modify the agent2.py file.
 Turns out you can give the LLM long instructions 
 and it will actually perform better. 
 These LLM context texts are carefully tested to work properly.
+
+
+

@@ -22,7 +22,7 @@ Under the "How to add tools" section, there is an example.
 > Because it's so simple, Agent2 is an agent framework for agents.
 
 Agent2 is programmed in Python, open-source on [Github](https://github.com/lukaspfitscher/Agent2)
-and was written by Lukas Pfitscher (feedback is appreciated: lukaspfitscher1996@gmail.com)"
+and was written by Lukas Pfitscher (feedback is appreciated: agent2pf@gmail.com)"
 
 ## Quick setup:
 
